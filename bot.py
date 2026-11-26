@@ -1,0 +1,45 @@
+
+import os
+from telegram import Update
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    ContextTypes
+)
+
+TOKEN = os.getenv("BOT_TOKEN")
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "Привет! Я AI-бот для анализа BinoDex.\n\n"
+        "Команды:\n"
+        "/status - статус бота\n"
+        "/signal - проверка сигналов"
+    )
+
+async def status(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "Бот работает.\n"
+        "Источник котировок пока не подключён."
+    )
+
+async def signal(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "AI-анализ пока настраивается.\n"
+        "Реальные сигналы появятся после подключения котировок."
+    )
+
+def main():
+    if not TOKEN:
+        raise ValueError("Не задан BOT_TOKEN")
+
+    app = ApplicationBuilder().token(TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("status", status))
+    app.add_handler(CommandHandler("signal", signal))
+
+    app.run_polling()
+
+if __name__ == "__main__":
+    main()
